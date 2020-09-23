@@ -1,0 +1,85 @@
+﻿@model EditProductViewModel
+@{
+    ViewData["Title"] = "EditProduct";
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <h2 class="card-header">
+                Edit product
+            </h2>
+            <div class="container">
+                <form asp-action="EditProduct" enctype="multipart/form-data">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input asp-for="ProductId" type="hidden" />
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Details" class="control-label"></label>
+                        <textarea asp-for="Details" class="form-control"></textarea>
+                        <span asp-validation-for="Details" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="FormFile" class="control-label"></label>
+                        <input asp-for="FormFile" type="file" accept="image/*" class="form-control" />
+                        <span asp-validation-for="FormFile" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhotoPath" class="control-label"></label>
+                        <img src='@Url.Content($"~/images/{Model.PhotoPath}")' />
+                        <input asp-for="PhotoPath" type="hidden" />
+
+                    </div>
+                    @if (Model != null && Model.Categories.Count > 0)
+                    {
+
+
+                        <select asp-for="CategoryId" class="form-group"
+                                asp-items="@(new SelectList(Model.Categories,"CategoryId","Name"))">
+                        </select>
+
+                        @*<select asp-for="CategoryId" class="form-group">
+                                @for (int i = 0; i < Model.Categories.Count; i++)
+                                {
+
+                                    <option name="@Model.Categories[i].CategoryId" value="@Model.Categories[i].CategoryId">@Model.Categories[i].Name</option>
+
+                                }
+                            </select>*@
+
+                    }
+
+                    <div class="form-group">
+                        <label asp-for="IsFeatured" class="control-label"></label>
+                        <input asp-for="IsFeatured" type="checkbox" />
+                        <span asp-validation-for="IsFeatured" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="IsNewArrival" class="control-label"></label>
+                        <input asp-for="IsNewArrival" type="checkbox" />
+                        <span asp-validation-for="IsNewArrival" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Edit" class="btn btn-warning" />
+                    </div>
+                </form>
+                <div class="clearBoth"></div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
