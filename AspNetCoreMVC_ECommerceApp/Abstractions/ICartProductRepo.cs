@@ -9,5 +9,6 @@ namespace AspNetCoreMVC_ECommerceApp.Abstractions
 {
     public interface ICartProductRepo:IGeneralRepo<CartProduct>
     {
+        Task<bool> RemoveProductFromCart(int cartId,int productId);
     }
 }

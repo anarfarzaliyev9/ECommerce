@@ -1,8 +1,37 @@
 ﻿$(function () {
     $(document).on("click", ".btn-icon-wish", function (e) {
         e.preventDefault();
-        var cartId_ = $(".cart-dropdown").attr("data-CartId");
+        var currentBtnWish = $(this);
         var productId_ = $(this).closest(".product-default").attr("data-id");
+        var cartId_ = $(".cart-dropdown").attr("data-CartId");
+        var isInCart= $(this).find(".fa-heart").hasClass("fas");
+        if (isInCart) {
+           
+            var data_ = {
+                CartId: cartId_,
+                productId: productId_
+            }
+       
+            $.ajax({
+                url: "/Home/RemoveFromCart",
+                type: "post",
+                async: true,
+                dataType: "json",
+                data: data_,
+                success: function (d) {
+                    $(currentBtnWish).find(".fa-heart").removeClass("fas").addClass("far");
+                    console.log($(".dropdown-menu").find(`.product[data-id="${productId_}"]`))
+                    $(".dropdown-menu").find(`.product[data-id="${productId_}"]`).remove();
+                },
+                error: function (d) {
+                    
+                    console.log("error")
+                }
+            })
+           
+        }
+        else {
+      
         var productName = $(this).closest(".product-default").find(".product-title a").text();
         var productPrice = $(this).closest(".product-default").find(".product-price").text();
         var productImageUrl = $(this).closest(".product-default").find("figure a img").attr("src");
@@ -15,10 +44,12 @@
         $.ajax({
             url: "/Home/AddToCart",
             type: "post",
+            async: true,
             dataType: "json",
             data: data_,
             success: function (d) {
-                var productDiv = $(`<div class="product"></div>`);
+                $(currentBtnWish).find(".fa-heart").removeClass("far").addClass("fas");
+                var productDiv = $(`<div class="product" data-id="${productId_}"></div>`);
                 var productDetailsDiv = $(`<div class="product-details"></div>`);
 
                 var productTitleH4 = $(`<div class="product-title"></div>`);
@@ -39,13 +70,16 @@
                 productDiv.append(productDetailsDiv);
                 productDiv.append(productFigureTag);
                 $(".dropdown-cart-products").append(productDiv);
+                
 
 
             },
             error: function (d) {
-                //alert(d.errorMessage)
+                alert(d.em)
                 console.log("error")
             }
         })
+        }
+
     })
 })

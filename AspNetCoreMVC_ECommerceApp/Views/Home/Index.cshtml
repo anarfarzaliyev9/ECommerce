@@ -164,7 +164,10 @@
                             <span class="product-price">$@product.Price</span>
                         </div><!-- End .price-box -->
                         <div class="product-action">
-                            <a href="index.html#" class="btn-icon-wish"><i class="far fa-heart"></i></a>
+                            <a href="index.html#" class="btn-icon-wish">
+                                @if (product.IsInCart){<i class="fas fa-heart"></i>}
+                                else{<i class="far fa-heart"></i>}
+                            </a>
                             <button class="btn-icon btn-add-cart" data-toggle="modal" data-target="#addCartModal">ADD TO CART</button>
                             <a href="ajax/product-quick-view.html" class="btn-quickview" title="Quick View"><i class="fas fa-external-link-alt"></i></a>
                         </div>
@@ -218,7 +221,10 @@
                             <span class="product-price">@product.Price</span>
                         </div><!-- End .price-box -->
                         <div class="product-action">
-                            <a href="index.html#" class="btn-icon-wish"><i class="far fa-heart"></i></a>
+                            <a href="index.html#" class="btn-icon-wish">
+                                @if (product.IsInCart){<i class="fas fa-heart"></i>}
+                                else{<i class="far fa-heart"></i>}
+                            </a>
                             <button class="btn-icon btn-add-cart" data-toggle="modal" data-target="#addCartModal">ADD TO CART</button>
                             <a href="ajax/product-quick-view.html" class="btn-quickview" title="Quick View"><i class="fas fa-external-link-alt"></i></a>
                         </div>

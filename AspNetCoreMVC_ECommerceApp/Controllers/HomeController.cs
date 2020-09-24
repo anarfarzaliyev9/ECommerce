@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using AspNetCoreMVC_ECommerceApp.Abstractions;
+using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace AspNetCoreMVC_ECommerceApp.Controllers
 {
@@ -44,8 +46,7 @@ namespace AspNetCoreMVC_ECommerceApp.Controllers
         {
             List<Product> products = await productRepo.GetAllProductWithCategory();
             IndexViewModel model = new IndexViewModel();
-            model.FeaturedProducts = products.Where(p => p.IsFeatured == true).ToList();
-            model.NewArrivalProducts = products.Where(p => p.IsNewArrival == true).ToList();
+            
 
             if (signInManager.IsSignedIn(User))
             {
@@ -55,6 +56,14 @@ namespace AspNetCoreMVC_ECommerceApp.Controllers
                 var user = users.FirstOrDefault(u => u.Id == id);
                 model.CartId = user.Cart.Id;
                 var allCartProducts = await cartProductRepo.GetAll();
+                //Define which products is in cart
+                foreach (var product in products)
+                {
+                    if (allCartProducts.Any(cp => cp.ProductId == product.Id))
+                    {
+                        product.IsInCart = true;
+                    }
+                }
                 //var userCartProducts = allCartProducts.Where(cp=>cp.CartId==user.CartId).ToList();
                 // Filter cart products by user's id
                 var filteredCartProducts = (from u in users
@@ -68,18 +77,9 @@ namespace AspNetCoreMVC_ECommerceApp.Controllers
                 model.UserCartProducts = userCartProducts;
 
             }
-            //if (signInManager.IsSignedIn(User))
-            //{
-            //    var id = userManager.GetUserId(User);
-            //    var users = await userManager.Users.ToListAsync();
-            //    var user = users.FirstOrDefault(u=>u.Id==id);
-            //    CartProduct cartProduct = new CartProduct()
-            //    {
-            //        CartId = user.CartId,
-            //        ProductId = 2
-            //    };
-            //   await cartProductRepo.Create(cartProduct);
-            //}
+            
+            model.FeaturedProducts = products.Where(p => p.IsFeatured == true).ToList();
+            model.NewArrivalProducts = products.Where(p => p.IsNewArrival == true).ToList();
             return View(model);
         }
         public IActionResult Blog()
@@ -117,15 +117,36 @@ namespace AspNetCoreMVC_ECommerceApp.Controllers
                 CartId = CartId,
                 ProductId = productId
             };
-            
-            var result = await cartProductRepo.Create(cartProduct);
-            if (result != null)
-            {
-             
-                return Json(200);
 
+            try
+            {
+                var result = await cartProductRepo.Create(cartProduct);
+                if (result != null)
+                {
+
+                    return Json(200);
+                }
             }
-           
+
+            catch (Exception){}
+
+            return Json(400);
+        }
+        public async Task<JsonResult> RemoveFromCart(int productId, int CartId)
+        {
+
+
+            try
+            {
+               
+                var result = await cartProductRepo.RemoveProductFromCart(CartId, productId);
+                if (result)
+                {
+                    return Json(200);
+                }
+            }
+
+            catch (Exception) { }
 
             return Json(400);
         }

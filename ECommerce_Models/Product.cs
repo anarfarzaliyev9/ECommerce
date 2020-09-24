@@ -22,5 +22,7 @@ namespace ECommerce_Models
         public bool IsFeatured { get; set; }
         public bool IsNewArrival { get; set; }
         public List<CartProduct> CartProducts { get; set; }
+        [NotMapped]
+        public bool IsInCart { get; set; }
     }
 }
